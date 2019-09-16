@@ -20,13 +20,23 @@ public class Main1 {
 
         BufferedImage parentImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), originalImage.getType());
         byte[] parentDna = new byte[numOfShapes * 10];
+        Random rand = new Random();
+        for (int i = 0; i < numOfShapes * 10; i += 10) {
+            for (int j = 0; j < 6; j += 2) {
+                byte x = (byte)rand.nextInt(100);
+                byte y = (byte)rand.nextInt(100);
+                parentDna[i + j] = x;
+                parentDna[i + j + 1] = y;
+            }
+        }
+
         renderImage(parentImage, parentDna);
         int parentCost = calculateCost(originalImage, parentImage);
         ImageIO.write(parentImage, "jpg", new File(outputDir + "out0.jpg"));
 
         int improvements = 0;
-        int improvementsModulo = 50;
-        int numOfGens = 100000;
+        int improvementsModulo = 10;
+        int numOfGens = 10000;
         for (int gen = 1; gen <= numOfGens; gen++) {
 //            System.out.println("Processing gen " + gen);
             byte[] childDna = mutate(parentDna);
@@ -91,11 +101,24 @@ public class Main1 {
     private static byte[] mutate(byte[] dna) {
         byte[] mutatedDna = dna.clone();
         Random rand = new Random();
-        int start = rand.nextInt(dna.length);
-//        int length = rand.nextInt(100);
-        int length = 20;
-        for (int i = start; i < Math.min(dna.length, start + length); i++) {
-            mutatedDna[i] = (byte)rand.nextInt(100);
+        int mutationType = rand.nextInt(2);
+        int i = rand.nextInt(50);
+        if (mutationType == 0) {
+            int j = rand.nextInt(3);
+            byte x = (byte)rand.nextInt(100);
+            byte y = (byte)rand.nextInt(100);
+            mutatedDna[i*10 + j*2] = x;
+            mutatedDna[i*10 + j*2 + 1] = y;
+        } else {
+            int bound = 80;
+            byte r = (byte)rand.nextInt(bound);
+            byte g = (byte)rand.nextInt(bound);
+            byte b = (byte)rand.nextInt(bound);
+            byte a = (byte)rand.nextInt(bound);
+            mutatedDna[i*10 + 6] = r;
+            mutatedDna[i*10 + 7] = g;
+            mutatedDna[i*10 + 8] = b;
+            mutatedDna[i*10 + 9] = a;
         }
         return mutatedDna;
     }
