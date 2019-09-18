@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Main1 {
+    static int numOfShapes = 50;
 
     public static void main(String[] args) throws Exception {
         String imagePath = "src/main/resources/pic1.jpg";
@@ -16,51 +17,128 @@ public class Main1 {
 
         int pixels = originalImage.getWidth() * originalImage.getHeight();
         System.out.println(pixels + " pixels");
-        int numOfShapes = 50;
 
-        BufferedImage parentImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), originalImage.getType());
         byte[] parentDna = new byte[numOfShapes * 10];
         Random rand = new Random();
-        for (int i = 0; i < numOfShapes * 10; i += 10) {
+        for (int i = 0; i < numOfShapes * 10; i+=10) {
             for (int j = 0; j < 6; j += 2) {
-                byte x = (byte)rand.nextInt(100);
-                byte y = (byte)rand.nextInt(100);
+                byte x = (byte)(rand.nextInt(200) - 50);
+                byte y = (byte)(rand.nextInt(200) - 50);
                 parentDna[i + j] = x;
                 parentDna[i + j + 1] = y;
             }
+//            parentDna[i+6] = 0;
+//            parentDna[i+7] = 0;
+//            parentDna[i+8] = 0;
+//            parentDna[i+9] = 0;
         }
 
-        renderImage(parentImage, parentDna);
-        int parentCost = calculateCost(originalImage, parentImage);
-        ImageIO.write(parentImage, "jpg", new File(outputDir + "out0.jpg"));
+        BufferedImage parentImage = new BufferedImage(100, 100, 5);
+        renderImage(parentDna, parentImage,100, 100, 5);
+        int parentCost = calculateCost(originalImage, parentImage);;
 
         int improvements = 0;
-        int improvementsModulo = 10;
+        int improvementsModulo = 20;
         int numOfGens = 10000;
-        for (int gen = 1; gen <= numOfGens; gen++) {
-//            System.out.println("Processing gen " + gen);
-            byte[] childDna = mutate(parentDna);
-            BufferedImage childImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), originalImage.getType());
-            renderImage(childImage, childDna);
-            int childCost = calculateCost(originalImage, childImage);
-            if (childCost < parentCost) {
-                parentImage = childImage;
-                parentDna = childDna;
-                parentCost = childCost;
-                System.out.println(gen);
-                improvements++;
-                if (improvements % improvementsModulo == 0) {
-                    ImageIO.write(childImage, "jpg", new File(outputDir + "out" + gen + ".jpg"));
+
+        for (int run = 0; run < 1; run++) {
+//            for (int i = 0; i < numOfShapes * 10; i += 10) {
+//                int rn = rand.nextInt(10);
+//                if (rn == 0) {
+//                    for (int j = 0; j < 6; j += 2) {
+//                        byte x = (byte)(rand.nextInt(200) - 50);
+//                        byte y = (byte)(rand.nextInt(200) - 50);
+//                        parentDna[i + j] = x;
+//                        parentDna[i + j + 1] = y;
+//                    }
+//                    parentDna[i + 6] = 0;
+//                    parentDna[i + 7] = 0;
+//                    parentDna[i + 8] = 0;
+//                    parentDna[i + 9] = 0;
+//                }
+//            }
+//            parentImage = new BufferedImage(100, 100, 5);
+//            renderImage(parentDna, parentImage, 100, 100, 5);
+//            parentCost = calculateCost(originalImage, parentImage);
+
+            for (int gen = 1; gen <= numOfGens; gen++) {
+                byte[] childDna = mutate(parentDna);
+                BufferedImage childImage = new BufferedImage(100, 100, 5);
+                renderImage(childDna, childImage, 100, 100, 5);
+                int childCost = calculateCost(originalImage, childImage);
+                if (childCost < parentCost) {
+                    parentImage = childImage;
+                    parentDna = childDna;
+                    parentCost = childCost;
+                    System.out.println(run*numOfGens + gen);
+                    improvements++;
+                    if (improvements % improvementsModulo == 0) {
+                        ImageIO.write(childImage, "jpg", new File(outputDir + "out" + (run*numOfGens + gen) + ".jpg"));
+                    }
                 }
             }
         }
 
-    }
+        numOfShapes = 100;
+        byte[] newParentDna = new byte[numOfShapes * 10];
+        for (int i = 0; i < parentDna.length; i++) {
+            newParentDna[i] = parentDna[i];
+        }
+        for (int i = numOfShapes * 5; i < numOfShapes * 10; i+=10) {
+            for (int j = 0; j < 6; j += 2) {
+                byte x = (byte)(rand.nextInt(200) - 50);
+                byte y = (byte)(rand.nextInt(200) - 50);
+                newParentDna[i + j] = x;
+                newParentDna[i + j + 1] = y;
+            }
+        }
+        parentDna = newParentDna;
 
-//    private static int calculateCost(BufferedImage originalImage, byte[] dna) throws Exception {
-//        BufferedImage newImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), originalImage.getType());
-//        renderImage(newImage, dna);
-//        return calculateCost(originalImage, newImage);
+        parentImage = new BufferedImage(100, 100, 5);
+        renderImage(parentDna, parentImage,100, 100, 5);
+        parentCost = calculateCost(originalImage, parentImage);;
+
+        for (int run = 0; run < 1; run++) {
+//            for (int i = 0; i < numOfShapes * 10; i += 10) {
+//                int rn = rand.nextInt(10);
+//                if (rn == 0) {
+//                    for (int j = 0; j < 6; j += 2) {
+//                        byte x = (byte)(rand.nextInt(200) - 50);
+//                        byte y = (byte)(rand.nextInt(200) - 50);
+//                        parentDna[i + j] = x;
+//                        parentDna[i + j + 1] = y;
+//                    }
+//                    parentDna[i + 6] = 0;
+//                    parentDna[i + 7] = 0;
+//                    parentDna[i + 8] = 0;
+//                    parentDna[i + 9] = 0;
+//                }
+//            }
+//            parentImage = new BufferedImage(100, 100, 5);
+//            renderImage(parentDna, parentImage, 100, 100, 5);
+//            parentCost = calculateCost(originalImage, parentImage);
+
+            for (int gen = 1; gen <= numOfGens; gen++) {
+                byte[] childDna = mutate(parentDna);
+                BufferedImage childImage = new BufferedImage(100, 100, 5);
+                renderImage(childDna, childImage, 100, 100, 5);
+                int childCost = calculateCost(originalImage, childImage);
+                if (childCost < parentCost) {
+                    parentImage = childImage;
+                    parentDna = childDna;
+                    parentCost = childCost;
+                    System.out.println(run*numOfGens + gen);
+                    improvements++;
+                    if (improvements % improvementsModulo == 0) {
+                        ImageIO.write(childImage, "jpg", new File(outputDir + "out" + (run*numOfGens + gen) + ".jpg"));
+                    }
+                }
+            }
+        }
+
+        ImageIO.write(parentImage, "jpg", new File(outputDir + "outfinal.jpg"));
+
+    }
 //    }
 
     private static int calculateCost(BufferedImage originalImage, BufferedImage newImage) throws Exception {
@@ -80,7 +158,8 @@ public class Main1 {
         return cost;
     }
 
-    private static void renderImage(BufferedImage image, byte[] dna) {
+    private static BufferedImage renderImage(byte[] dna, BufferedImage image, int width, int height, int type) {
+//        BufferedImage image = new BufferedImage(width, height, type);
         Graphics2D graphics = (Graphics2D) image.getGraphics();
         for (int i = 0; i < dna.length; i += 10) {
             Polygon polygon = new Polygon();
@@ -96,17 +175,18 @@ public class Main1 {
             graphics.setColor(new Color(r, g, b, a));
             graphics.fillPolygon(polygon);
         }
+        return image;
     }
 
     private static byte[] mutate(byte[] dna) {
         byte[] mutatedDna = dna.clone();
         Random rand = new Random();
         int mutationType = rand.nextInt(2);
-        int i = rand.nextInt(50);
+        int i = rand.nextInt(numOfShapes);
         if (mutationType == 0) {
             int j = rand.nextInt(3);
-            byte x = (byte)rand.nextInt(100);
-            byte y = (byte)rand.nextInt(100);
+            byte x = (byte)(rand.nextInt(200) - 50);
+            byte y = (byte)(rand.nextInt(200) - 50);
             mutatedDna[i*10 + j*2] = x;
             mutatedDna[i*10 + j*2 + 1] = y;
         } else {
@@ -123,10 +203,11 @@ public class Main1 {
         return mutatedDna;
     }
 
-//    private static byte getEffectiveValue(byte value) {
-//        if (value < 0) {
-//
-//        }
-//    }
+    private static int getEffectiveValue(int value) {
+        if (value < 0) {
+            return 256 - value;
+        }
+        return value;
+    }
 
 }
