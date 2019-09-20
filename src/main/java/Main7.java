@@ -9,12 +9,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-public class Main5 {
+public class Main7 {
 
     static boolean newShape = false;
 
     public static void main(String[] args) throws Exception {
-        String imagePath = "src/main/resources/dona200.jpg";
+        String imagePath = "src/main/resources/dona400.jpg";
         String outputDir = "src/main/resources/output/";
         BufferedImage originalImage = ImageIO.read(new File(imagePath));
         int width = originalImage.getWidth();
@@ -25,10 +25,10 @@ public class Main5 {
 
         Random rand = new Random();
 
-        int numOfRuns = 20;
-        int shapesPerRun = 10;
-        int gensPerRun = 4000;
-        int sparsity = 1;
+        int numOfRuns = 25;
+        int shapesPerRun = 8;
+        int gensPerRun = 10000;
+        int sparsity = 2;
         int improvements = 0;
         int improvementsModulo = 20;
         int parentCost;
@@ -58,15 +58,17 @@ public class Main5 {
                 runDna[i + 4] = ang;
             }
 
-            renderImage(runDna, parentImage,width, height, 5);
-            parentCost = ErrorCalc.calculateIntCost(originalImage, parentImage, sparsity);
+            BufferedImage baseImage = new BufferedImage(width, height, 5);
+            parentImage = baseImage;
+            renderImage(runDna, baseImage, 0, dna.length);
+            parentCost = ErrorCalc.calculateIntCost(originalImage, baseImage, sparsity);
 
             for (int gen = 1; gen <= gensPerRun; gen++) {
                 int[] childDna = mutate(runDna, numOfShapes, shapesPerRun, width, height, factor);
                 boolean localNewShape = newShape;
                 newShape = false;
-                BufferedImage childImage = new BufferedImage(width, height, 5);
-                renderImage(childDna, childImage, width, height, 5);
+                BufferedImage childImage = deepCopy(baseImage);
+                renderImage(childDna, childImage, dna.length, runDna.length);
                 int childCost = ErrorCalc.calculateIntCost(originalImage, childImage, sparsity);
                 if (childCost < parentCost) {
                     if (localNewShape) {
@@ -89,27 +91,9 @@ public class Main5 {
         ImageIO.write(parentImage, "jpg", new File(outputDir + "outfinal.jpg"));
 
     }
-//    }
 
-    private static int calculateCost(BufferedImage originalImage, BufferedImage newImage) throws Exception {
-        if (originalImage.getWidth() != newImage.getWidth() || originalImage.getHeight() != newImage.getHeight()) {
-            throw new Exception("Not the same size");
-        }
-
-        DataBuffer originalData = originalImage.getRaster().getDataBuffer();
-        DataBuffer newData = newImage.getRaster().getDataBuffer();
-
-        int cost = 0;
-        int dataSize = originalData.getSize();
-        for (int i = 0; i < dataSize; i++) {
-            cost += Math.abs(originalData.getElem(i) - newData.getElem(i));
-        }
-
-        return cost;
-    }
-
-    private static BufferedImage renderImage(int[] dna, BufferedImage image, int width, int height, int type) {
-        for (int i = 0; i < dna.length; i += 10) {
+    private static BufferedImage renderImage(int[] dna, BufferedImage image, int start, int end) {
+        for (int i = start; i < end; i += 10) {
             Graphics2D graphics = (Graphics2D) image.getGraphics();
             int x = dna[i];
             int y = dna[i + 1];
