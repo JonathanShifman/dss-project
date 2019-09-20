@@ -2,15 +2,19 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
 public class Main5 {
 
+    static boolean newShape = false;
+
     public static void main(String[] args) throws Exception {
-        String imagePath = "src/main/resources/mona3.jpg";
+        String imagePath = "src/main/resources/dona200.jpg";
         String outputDir = "src/main/resources/output/";
         BufferedImage originalImage = ImageIO.read(new File(imagePath));
         int width = originalImage.getWidth();
@@ -24,6 +28,7 @@ public class Main5 {
         int numOfRuns = 20;
         int shapesPerRun = 10;
         int gensPerRun = 4000;
+        int sparsity = 1;
         int improvements = 0;
         int improvementsModulo = 20;
         int parentCost;
@@ -41,8 +46,10 @@ public class Main5 {
             for (int i = dna.length; i < runDna.length; i += 10) {
                 int x = rand.nextInt(width);
                 int y = rand.nextInt(height);
-                int ow = rand.nextInt(width);
-                int oh = rand.nextInt(height);
+                double wBound = factor * (double)width;
+                double hBound = factor * (double)height;
+                int ow = rand.nextInt((int)wBound);
+                int oh = rand.nextInt((int)hBound);
 //                int ow = 25;
 //                int oh = 25;
                 runDna[i] = x;
@@ -52,14 +59,19 @@ public class Main5 {
             }
 
             renderImage(runDna, parentImage,width, height, 5);
-            parentCost = calculateCost(originalImage, parentImage);
+            parentCost = ErrorCalc.calculateIntCost(originalImage, parentImage, sparsity);
 
             for (int gen = 1; gen <= gensPerRun; gen++) {
                 int[] childDna = mutate(runDna, numOfShapes, shapesPerRun, width, height, factor);
+                boolean localNewShape = newShape;
+                newShape = false;
                 BufferedImage childImage = new BufferedImage(width, height, 5);
                 renderImage(childDna, childImage, width, height, 5);
-                int childCost = calculateCost(originalImage, childImage);
+                int childCost = ErrorCalc.calculateIntCost(originalImage, childImage, sparsity);
                 if (childCost < parentCost) {
+                    if (localNewShape) {
+                        System.out.println("New shape: " + ((run-1)*gensPerRun + gen));
+                    }
                     System.out.println((run-1)*gensPerRun + gen + ": " + (parentCost - childCost) + " " + childCost);
                     parentImage = childImage;
                     runDna = childDna;
@@ -127,6 +139,7 @@ public class Main5 {
         int mutationType = rand.nextInt(2);
         int i = rand.nextInt(shapesPerRun);
         i = numOfShapes - shapesPerRun + i;
+//        int i = rand.nextInt(numOfShapes);
         if (mutationType == 0) {
             double wBound = factor * (double)width;
             double hBound = factor * (double)height;
@@ -139,7 +152,10 @@ public class Main5 {
             mutatedDna[i*10 + 2] = ow;
             mutatedDna[i*10 + 3] = oh;
         } else {
-            int bound = 80;
+            if (mutatedDna[i*10 + 9] == 0) {
+                newShape = true;
+            }
+            int bound = 100;
             int r = rand.nextInt(bound);
             int g = rand.nextInt(bound);
             int b = rand.nextInt(bound);
@@ -152,11 +168,11 @@ public class Main5 {
         return mutatedDna;
     }
 
-    private static int getEffectiveValue(int value) {
-        if (value < 0) {
-            return 256 - value;
-        }
-        return value;
+    static BufferedImage deepCopy(BufferedImage bi) {
+        ColorModel cm = bi.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bi.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
 }
