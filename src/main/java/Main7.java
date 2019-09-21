@@ -14,8 +14,8 @@ public class Main7 {
     static boolean newShape = false;
 
     public static void main(String[] args) throws Exception {
-        String imagePath = "src/main/resources/mona200.jpg";
-        String outputDir = "src/main/resources/output/";
+        String imagePath = "src/main/resources/gallery/dona/dona200.jpg";
+        String outputDir = "src/main/resources/gallery/dona/output/";
         BufferedImage originalImage = ImageIO.read(new File(imagePath));
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
