@@ -16,7 +16,7 @@ public class ErrorCalc {
     static float maxA = 1f;
 
     public static void main(String[] args) throws Exception {
-        String originalPath = "src/main/resources/dona200.jpg";
+        String originalPath = "src/main/resources/mona200.jpg";
         String generatedPath = "src/main/resources/output/outfinal.jpg";
         BufferedImage originalImage = ImageIO.read(new File(originalPath));
         BufferedImage generatedImage = ImageIO.read(new File(generatedPath));

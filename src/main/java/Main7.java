@@ -14,7 +14,7 @@ public class Main7 {
     static boolean newShape = false;
 
     public static void main(String[] args) throws Exception {
-        String imagePath = "src/main/resources/dona400.jpg";
+        String imagePath = "src/main/resources/mona200.jpg";
         String outputDir = "src/main/resources/output/";
         BufferedImage originalImage = ImageIO.read(new File(imagePath));
         int width = originalImage.getWidth();
@@ -28,7 +28,7 @@ public class Main7 {
         int numOfRuns = 25;
         int shapesPerRun = 8;
         int gensPerRun = 10000;
-        int sparsity = 2;
+        int sparsity = 1;
         int improvements = 0;
         int improvementsModulo = 20;
         int parentCost;
@@ -44,12 +44,12 @@ public class Main7 {
                 runDna[i] = dna[i];
             }
             for (int i = dna.length; i < runDna.length; i += 10) {
-                int x = rand.nextInt(width);
-                int y = rand.nextInt(height);
                 double wBound = factor * (double)width;
                 double hBound = factor * (double)height;
                 int ow = rand.nextInt((int)wBound);
                 int oh = rand.nextInt((int)hBound);
+                int x = rand.nextInt(width + ow) - ow;
+                int y = rand.nextInt(height + oh) - oh;
                 int ang = rand.nextInt(180);
                 runDna[i] = x;
                 runDna[i + 1] = y;
@@ -121,10 +121,10 @@ public class Main7 {
         if (mutationType == 0) {
             double wBound = factor * (double)width;
             double hBound = factor * (double)height;
-            int x = rand.nextInt(width);
-            int y = rand.nextInt(height);
             int ow = rand.nextInt((int)wBound);
             int oh = rand.nextInt((int)hBound);
+            int x = rand.nextInt(width + ow) - ow;
+            int y = rand.nextInt(height + oh) - oh;
             int ang = rand.nextInt(180);
             mutatedDna[i*10] = x;
             mutatedDna[i*10 + 1] = y;
