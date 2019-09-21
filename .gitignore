@@ -1,5 +1,4 @@
 .idea/
 target/
 *.iml
-output/
-output_1/
+src/main/resources/gallery
