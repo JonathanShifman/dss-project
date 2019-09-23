@@ -2,7 +2,7 @@ package algorithm;
 
 public class AlgorithmConfig {
 
-    public static final String OUTPUT_DIR = "src/main/resources/gallery/output/";
+    public static final String OUTPUT_DIR = "src/main/resources/output/";
     public static final int NUM_OF_EPOCHS = 25;
     public static final int SHAPES_PER_EPOCH = 8;
     public static final int ITERATIONS_PER_EPOCH = 10000;

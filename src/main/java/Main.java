@@ -8,7 +8,7 @@ import java.io.File;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        String imagePath = "src/main/resources/gallery/dona/dona400.jpg";
+        String imagePath = "src/main/resources/gallery/federer.jpg";
         BufferedImage originalImage = ImageIO.read(new File(imagePath));
         IRecreationAlgorithm algorithm = AlgorithmConfig.SHAPE_TO_USE.getAlgorithm();
         algorithm.recreateImage(originalImage);
