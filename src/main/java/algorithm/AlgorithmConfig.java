@@ -5,8 +5,8 @@ public class AlgorithmConfig {
     public static final String OUTPUT_DIR = "src/main/resources/output/";
     public static final int NUM_OF_EPOCHS = 25;
     public static final int SHAPES_PER_EPOCH = 8;
-    public static final int ITERATIONS_PER_EPOCH = 10000;
-    public static final EShapeType SHAPE_TO_USE = EShapeType.TRIANGLE;
+    public static final int ITERATIONS_PER_EPOCH = 20_000;
+    public static final EShapeType SHAPE_TO_USE = EShapeType.ELLIPSE;
 
     public static final int MAX_FRAME_SIDE = 100;
 

@@ -78,7 +78,6 @@ public class ErrorCalc {
             }
         }
 
-        Random rand = new Random();
         for (int size = 8; size <= 256; size *= 2) {
             BufferedImage image = new BufferedImage(width, height, 5);
             Graphics2D graphics = (Graphics2D)image.getGraphics();

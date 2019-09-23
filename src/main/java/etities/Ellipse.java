@@ -86,4 +86,7 @@ public class Ellipse extends Shape {
         return height;
     }
 
+    public int getAngle() {
+        return angle;
+    }
 }
