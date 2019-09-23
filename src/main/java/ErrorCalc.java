@@ -16,29 +16,29 @@ public class ErrorCalc {
     static float maxA = 1f;
 
     public static void main(String[] args) throws Exception {
-        String originalPath = "src/main/resources/gallery/dona/dona400.jpg";
-        String generatedPath = "src/main/resources/gallery/dona/output/expanded.jpg";
+        String originalPath = "src/main/resources/gallery/eiffel/eiffel400.jpg";
+        String generatedPath = "src/main/resources/gallery/output/final.jpg";
         BufferedImage originalImage = ImageIO.read(new File(originalPath));
         BufferedImage generatedImage = ImageIO.read(new File(generatedPath));
-//        calculateCostWithPics(originalImage, generatedImage);
-        System.out.println(calculateCost(originalImage, generatedImage, 1));
+        FitnessMapping.createFitnessMap(originalImage, generatedImage);
+//        System.out.println(calculateCost(originalImage, generatedImage));
     }
 
-    public static double calculateCost(BufferedImage originalImage, BufferedImage newImage, int sparsity) throws Exception {
+    public static double calculateCost(BufferedImage originalImage, BufferedImage newImage) throws Exception {
         if (originalImage.getWidth() != newImage.getWidth() || originalImage.getHeight() != newImage.getHeight()) {
             throw new Exception("Not the same size");
         }
 
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
-        int pixels = width * height / (sparsity * sparsity);
+        int pixels = width * height;
 
         DataBuffer originalData = originalImage.getRaster().getDataBuffer();
         DataBuffer newData = newImage.getRaster().getDataBuffer();
 
         int cost = 0;
-        for (int i = 0; i < width; i += sparsity) {
-            for (int j = 0; j < height; j += sparsity) {
+        for (int i = 0; i < width; i ++) {
+            for (int j = 0; j < height; j ++) {
                 int start = i * width * 3 + (j * 3);
                 for (int k = 0; k < 3; k++) {
                     cost += Math.abs(originalData.getElem(start + k) - newData.getElem(start + k));

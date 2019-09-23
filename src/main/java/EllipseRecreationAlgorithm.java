@@ -3,20 +3,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
-import java.util.Random;
 
 public class EllipseRecreationAlgorithm implements IRecreationAlgorithm {
 
-    private Random rand = new Random();
-
     @Override
-    public void recreate(BufferedImage originalImage) throws Exception {
-        String outputDir = "src/main/resources/gallery/output/";
+    public void recreateImage(BufferedImage originalImage) throws Exception {
         int blockSize = calculateBlockSize(originalImage);
-        originalImage = SizeReducer.reduceSize(originalImage, blockSize);
-        ImageIO.write(originalImage, "jpg", new File(outputDir + "reduced.jpg"));
-        int imageWidth = originalImage.getWidth();
-        int imageHeight = originalImage.getHeight();
+        BufferedImage reducedImage = SizeReducer.reduceSize(originalImage, blockSize);
+        int imageWidth = reducedImage.getWidth();
+        int imageHeight = reducedImage.getHeight();
 
         int progressStepsCounter = 0;
         int fitness;
@@ -33,9 +28,9 @@ public class EllipseRecreationAlgorithm implements IRecreationAlgorithm {
             int segmentStart = epoch * shapesPerEpoch;
             int segmentEnd = segmentStart + shapesPerEpoch;
 
-            BufferedImage baseImage = createEmptyImage(originalImage);
+            BufferedImage baseImage = createEmptyImage(reducedImage);
             renderingManager.renderImage(solutionState, baseImage, 0, segmentStart);
-            fitness = ErrorCalc.calculateIntCost(originalImage, baseImage, 1);
+            fitness = ErrorCalc.calculateIntCost(reducedImage, baseImage, 1);
 
             for (int i = 0; i < totalNumOfShapes; i++) {
                 solutionState.getShapes().add(Ellipse.generateRandom(factor, imageWidth, imageHeight));
@@ -45,24 +40,24 @@ public class EllipseRecreationAlgorithm implements IRecreationAlgorithm {
                 BufferedImage newImage = deepCopy(baseImage);
                 SolutionState newState = solutionState.mutate(segmentStart, segmentEnd, factor, imageWidth, imageHeight);
                 renderingManager.renderImage(newState, newImage, segmentStart, segmentEnd);
-                int newCost = ErrorCalc.calculateIntCost(originalImage, newImage, 1);
+                int newCost = ErrorCalc.calculateIntCost(reducedImage, newImage, 1);
                 if (newCost < fitness) {
                     int globalIterationIndex = epoch * iterationsPerRun + iter;
                     System.out.println(globalIterationIndex + ": " + (fitness - newCost) + " " + newCost);
                     solutionState = newState;
                     fitness = newCost;
                     progressStepsCounter++;
-                    if (progressStepsCounter % AlgorithmConfig.PROGRESS_INTERVAL == 0) {
-                        ImageIO.write(newImage, "jpg", new File(outputDir + "out" + globalIterationIndex + ".jpg"));
+                    if (AlgorithmConfig.SHOULD_OUTPUT_PROGRESS && (progressStepsCounter % AlgorithmConfig.PROGRESS_INTERVAL == 0)) {
+                        ImageIO.write(newImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "out" + globalIterationIndex + ".jpg"));
                     }
                 }
             }
         }
 
+        solutionState.expand(blockSize);
         BufferedImage finalImage = createEmptyImage(originalImage);
         renderingManager.renderImage(solutionState, finalImage, 0, totalNumOfShapes);
-        solutionState.expand(blockSize);
-        ImageIO.write(finalImage, "jpg", new File(outputDir + "final.jpg"));
+        ImageIO.write(finalImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "final.jpg"));
     }
 
     private static int calculateBlockSize(BufferedImage image) {

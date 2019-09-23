@@ -19,7 +19,11 @@ public class RGBAColor {
     }
 
     public Color toColor() {
-        return new Color(0.01f * r, 0.01f * g, 0.01f * b, 0.01f * a);
+        return new Color(
+                0.01f * r,
+                0.01f * g,
+                0.01f * b,
+                0.01f * a);
     }
 
     public int getR() {
