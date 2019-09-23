@@ -11,12 +11,15 @@ import java.util.Random;
 
 public class Main7 {
 
-    static boolean newShape = false;
-
     public static void main(String[] args) throws Exception {
-        String imagePath = "src/main/resources/gallery/dona/dona200.jpg";
-        String outputDir = "src/main/resources/gallery/dona/output/";
+        String imagePath = "src/main/resources/gallery/donald/donald200.jpg";
+        String outputDir = "src/main/resources/gallery/donald/output/";
         BufferedImage originalImage = ImageIO.read(new File(imagePath));
+        int blockSize = 4;
+        if (originalImage.getWidth() > 200) {
+            originalImage = SizeReducer.reduceSize(originalImage, blockSize);
+        }
+
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
 
@@ -28,6 +31,9 @@ public class Main7 {
         int numOfRuns = 25;
         int shapesPerRun = 8;
         int gensPerRun = 10000;
+//        int numOfRuns = 20;
+//        int shapesPerRun = 10;
+//        int gensPerRun = 1000;
         int sparsity = 1;
         int improvements = 0;
         int improvementsModulo = 20;
@@ -64,16 +70,11 @@ public class Main7 {
             parentCost = ErrorCalc.calculateIntCost(originalImage, baseImage, sparsity);
 
             for (int gen = 1; gen <= gensPerRun; gen++) {
-                int[] childDna = mutate(runDna, numOfShapes, shapesPerRun, width, height, factor);
-                boolean localNewShape = newShape;
-                newShape = false;
                 BufferedImage childImage = deepCopy(baseImage);
+                int[] childDna = mutate(runDna, numOfShapes, shapesPerRun, width, height, factor, originalImage, childImage);
                 renderImage(childDna, childImage, dna.length, runDna.length);
                 int childCost = ErrorCalc.calculateIntCost(originalImage, childImage, sparsity);
                 if (childCost < parentCost) {
-                    if (localNewShape) {
-                        System.out.println("New shape: " + ((run-1)*gensPerRun + gen));
-                    }
                     System.out.println((run-1)*gensPerRun + gen + ": " + (parentCost - childCost) + " " + childCost);
                     parentImage = childImage;
                     runDna = childDna;
@@ -88,8 +89,12 @@ public class Main7 {
             dna = runDna;
         }
 
+//        System.out.println(clean(originalImage, dna));
         ImageIO.write(parentImage, "jpg", new File(outputDir + "outfinal.jpg"));
-
+        expandDNA(dna, blockSize);
+        BufferedImage expandedImage = new BufferedImage(width * blockSize, height * blockSize, 5);
+        renderImage(dna, expandedImage, 0, dna.length);
+        ImageIO.write(expandedImage, "jpg", new File(outputDir + "expanded.jpg"));
     }
 
     private static BufferedImage renderImage(int[] dna, BufferedImage image, int start, int end) {
@@ -111,7 +116,7 @@ public class Main7 {
         return image;
     }
 
-    private static int[] mutate(int[] dna, int numOfShapes, int shapesPerRun, int width, int height, double factor) {
+    private static int[] mutate(int[] dna, int numOfShapes, int shapesPerRun, int width, int height, double factor, BufferedImage originalImage, BufferedImage childImage) {
         int[] mutatedDna = dna.clone();
         Random rand = new Random();
         int mutationType = rand.nextInt(2);
@@ -132,14 +137,24 @@ public class Main7 {
             mutatedDna[i*10 + 3] = oh;
             mutatedDna[i*10 + 4] = ang;
         } else {
-            if (mutatedDna[i*10 + 9] == 0) {
-                newShape = true;
+            int r, g, b, a;
+//            int colorSelectionMethod = rand.nextInt(2);
+            int colorSelectionMethod = 0;
+            if (colorSelectionMethod == 0) {
+                int bound = 100;
+                r = rand.nextInt(bound);
+                g = rand.nextInt(bound);
+                b = rand.nextInt(bound);
+                a = rand.nextInt(bound);
+            } else {
+                r = 0;
+                g = 0;
+                b = 0;
+                a = 0;
+//                int x = mutatedDna[i*10] + (mutatedDna[i*10+2] / 2);
+//                int y = mutatedDna[i*10 + 1] + (mutatedDna[i*10+3] / 2);
+//                int start = (x * width + y) * 3;
             }
-            int bound = 100;
-            int r = rand.nextInt(bound);
-            int g = rand.nextInt(bound);
-            int b = rand.nextInt(bound);
-            int a = rand.nextInt(bound);
             mutatedDna[i*10 + 6] = r;
             mutatedDna[i*10 + 7] = g;
             mutatedDna[i*10 + 8] = b;
@@ -153,6 +168,45 @@ public class Main7 {
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         WritableRaster raster = bi.copyData(null);
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
+
+    static int clean(BufferedImage originalImage, int[] dna) throws Exception {
+        BufferedImage generatedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), originalImage.getType());
+        renderImage(dna, generatedImage, 0, dna.length);
+        int generatedCost = ErrorCalc.calculateIntCost(originalImage, generatedImage, 1);
+        System.out.println(generatedCost);
+
+        int[] newDna = dna.clone();
+        int cleaned = 0;
+        for (int i = 0; i < dna.length; i += 10) {
+            for (int j = 0; j < 10; j++) {
+                newDna[i + j] = 0;
+            }
+
+            BufferedImage newImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), originalImage.getType());
+            renderImage(newDna, newImage, 0, dna.length);
+            int newCost = ErrorCalc.calculateIntCost(originalImage, newImage, 1);
+            System.out.println(newCost);
+            if (newCost < generatedCost) {
+                System.out.println("CLEANED");
+                cleaned++;
+            }
+
+            for (int j = 0; j < 10; j++) {
+                newDna[i + j] = dna[i + j];
+            }
+        }
+
+        return cleaned;
+    }
+
+    static void expandDNA(int[] dna, int factor) {
+        for (int i = 0; i < dna.length; i += 10) {
+            dna[i] = dna[i] * factor;
+            dna[i + 1] = dna[i + 1] * factor;
+            dna[i + 2] = dna[i + 2] * factor;
+            dna[i + 3] = dna[i + 3] * factor;
+        }
     }
 
 }

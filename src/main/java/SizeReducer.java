@@ -15,7 +15,10 @@ public class SizeReducer {
         ImageIO.write(resizedImage, "jpg", new File(outputPath));
     }
 
-    private static BufferedImage reduceSize(BufferedImage originalImage, int blockSize) throws IOException {
+    public static BufferedImage reduceSize(BufferedImage originalImage, int blockSize) {
+        if (blockSize == 1) {
+            return originalImage;
+        }
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
         width -= width % blockSize;

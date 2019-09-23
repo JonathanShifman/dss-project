@@ -9,15 +9,15 @@ import java.util.Random;
 
 public class ErrorCalc {
 
-    static String outputDir = "src/main/resources/output/";
+    static String outputDir = "src/main/resources/gallery/dona/output/";
     static float minError = 0;
     static float maxError = 50;
     static float minA = 0f;
     static float maxA = 1f;
 
     public static void main(String[] args) throws Exception {
-        String originalPath = "src/main/resources/mona200.jpg";
-        String generatedPath = "src/main/resources/output/outfinal.jpg";
+        String originalPath = "src/main/resources/gallery/dona/dona400.jpg";
+        String generatedPath = "src/main/resources/gallery/dona/output/expanded.jpg";
         BufferedImage originalImage = ImageIO.read(new File(originalPath));
         BufferedImage generatedImage = ImageIO.read(new File(generatedPath));
 //        calculateCostWithPics(originalImage, generatedImage);
