@@ -4,6 +4,8 @@ import java.io.File;
 
 public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
 
+    protected ImageRenderingManager renderingManager;
+
     @Override
     public void recreateImage(BufferedImage originalImage) throws Exception {
         int blockSize = ImageUtils.calculateBlockSize(originalImage, AlgorithmConfig.MAX_FRAME_SIDE);
@@ -19,7 +21,6 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
         int iterationsPerRun = AlgorithmConfig.ITERATIONS_PER_EPOCH;
         int totalNumOfShapes = numOfEpochs * shapesPerEpoch;
         SolutionState solutionState = new SolutionState(totalNumOfShapes);
-        ImageRenderingManager<Ellipse> renderingManager = new EllipseRenderingManager();
         for (int epoch = 0; epoch < numOfEpochs; epoch++) {
             int epochsRemaining = numOfEpochs - epoch;
             double factor = (double)epochsRemaining / (double)numOfEpochs;
@@ -31,7 +32,7 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
             fitness = ErrorCalc.calculateIntCost(reducedImage, baseImage, 1);
 
             for (int i = 0; i < totalNumOfShapes; i++) {
-                solutionState.getShapes().add(Ellipse.generateRandom(factor, imageWidth, imageHeight));
+                solutionState.getShapes().add(generateRandomShape(factor, imageWidth, imageHeight));
             }
 
             for (int iter = 1; iter <= iterationsPerRun; iter++) {
@@ -57,4 +58,6 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
         renderingManager.renderImage(solutionState, finalImage, 0, totalNumOfShapes);
         ImageIO.write(finalImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "final.jpg"));
     }
+
+    protected abstract IShape generateRandomShape(double factor, int imageWidth, int imageHeight);
 }

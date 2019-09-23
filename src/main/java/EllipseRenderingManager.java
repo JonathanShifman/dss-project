@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class EllipseRenderingManager implements ImageRenderingManager<Ellipse> {
+public class EllipseRenderingManager implements ImageRenderingManager {
 
     public void renderImage(SolutionState solutionState, BufferedImage image, int start, int end) {
         for (int i = start; i < end; i ++) {
