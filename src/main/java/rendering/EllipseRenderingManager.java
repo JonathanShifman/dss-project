@@ -1,3 +1,8 @@
+package rendering;
+
+import etities.Ellipse;
+import etities.SolutionState;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 

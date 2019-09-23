@@ -1,3 +1,9 @@
+package algorithm;
+
+import etities.Ellipse;
+import etities.IShape;
+import rendering.EllipseRenderingManager;
+
 public class EllipseBasedAlgorithm extends ShapeBasedAlgorithm {
 
     public EllipseBasedAlgorithm() {

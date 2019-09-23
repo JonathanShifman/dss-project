@@ -1,3 +1,6 @@
+import algorithm.CircleBasedAlgorithm;
+import algorithm.IRecreationAlgorithm;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;

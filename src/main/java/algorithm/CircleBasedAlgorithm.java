@@ -1,3 +1,9 @@
+package algorithm;
+
+import etities.Circle;
+import etities.IShape;
+import rendering.CircleRenderingManager;
+
 public class CircleBasedAlgorithm extends ShapeBasedAlgorithm {
 
     public CircleBasedAlgorithm() {

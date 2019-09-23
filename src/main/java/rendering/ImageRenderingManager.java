@@ -1,3 +1,7 @@
+package rendering;
+
+import etities.SolutionState;
+
 import java.awt.image.BufferedImage;
 
 public interface ImageRenderingManager {

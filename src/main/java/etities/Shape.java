@@ -1,3 +1,5 @@
+package etities;
+
 import java.util.Random;
 
 public abstract class Shape implements IShape {

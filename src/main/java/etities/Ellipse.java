@@ -1,3 +1,5 @@
+package etities;
+
 public class Ellipse extends Shape {
 
     private int width;

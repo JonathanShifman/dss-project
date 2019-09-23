@@ -1,3 +1,5 @@
+package etities;
+
 public class Circle extends Shape {
 
     private int size;

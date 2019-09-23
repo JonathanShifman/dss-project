@@ -1,3 +1,12 @@
+package algorithm;
+
+import etities.IShape;
+import etities.SolutionState;
+import fitnessEvaluation.ErrorCalc;
+import rendering.ImageRenderingManager;
+import utils.ImageUtils;
+import utils.SizeReducer;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;

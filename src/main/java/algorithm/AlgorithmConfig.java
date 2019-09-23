@@ -1,3 +1,5 @@
+package algorithm;
+
 public class AlgorithmConfig {
 
     public static final String OUTPUT_DIR = "src/main/resources/gallery/output/";

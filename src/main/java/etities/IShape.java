@@ -1,3 +1,5 @@
+package etities;
+
 public interface IShape {
 
     void mutate(double progressFactor, int imageWidth, int imageHeight);

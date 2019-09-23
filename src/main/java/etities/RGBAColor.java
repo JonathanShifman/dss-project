@@ -1,3 +1,5 @@
+package etities;
+
 import java.awt.*;
 
 public class RGBAColor {
