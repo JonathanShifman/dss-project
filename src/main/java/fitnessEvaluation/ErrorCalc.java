@@ -53,59 +53,6 @@ public class ErrorCalc {
         return (double)cost / ((double)pixels * 3);
     }
 
-    public static void calculateCostWithPics(BufferedImage originalImage, BufferedImage newImage) throws Exception {
-        if (originalImage.getWidth() != newImage.getWidth() || originalImage.getHeight() != newImage.getHeight()) {
-            throw new Exception("Not the same size");
-        }
-
-        int width = originalImage.getWidth();
-        int height = originalImage.getHeight();
-
-        double[][] errors = new double[width][height];
-
-        DataBuffer originalData = originalImage.getRaster().getDataBuffer();
-        DataBuffer newData = newImage.getRaster().getDataBuffer();
-
-        int cost = 0;
-        for (int i = 0; i < width; i ++) {
-            for (int j = 0; j < height; j ++) {
-                int start = i * width * 3 + (j * 3);
-                double error = 0;
-                for (int k = 0; k < 3; k++) {
-                    error += Math.abs(originalData.getElem(start + k) - newData.getElem(start + k));
-                }
-                errors[i][j] = error / 3;
-            }
-        }
-
-        for (int size = 8; size <= 256; size *= 2) {
-            BufferedImage image = new BufferedImage(width, height, 5);
-            Graphics2D graphics = (Graphics2D)image.getGraphics();
-            graphics.setColor(new Color(1f, 1f, 1f, 1f));
-            graphics.fillRect(0, 0, width, height);
-            for (int i = 0; i < width; i+= size) {
-                for (int j = 0; j < height; j += size) {
-                    float error = 0;
-                    int count = 0;
-                    for (int m = i; m < Math.min(width, i + size); m++) {
-                        for (int n = j; n < Math.min(height, j + size); n++) {
-                            count++;
-                            error += errors[m][n];
-                        }
-                    }
-                    error /= count;
-                    if (error < minError) error = minError;
-                    if (error > maxError) error = maxError;
-                    float factor = (error - minError) / (maxError - minError);
-                    float a = maxA * factor;
-                    graphics.setColor(new Color(1, 0, 0, a));
-                    graphics.fillRect(i, j, size, size);
-                }
-            }
-
-            ImageIO.write(image, "jpg", new File(outputDir + "error" + size + ".jpg"));
-        }
-    }
 
     public static int calculateIntCost(BufferedImage originalImage, BufferedImage newImage, int sparsity) throws Exception {
         if (originalImage.getWidth() != newImage.getWidth() || originalImage.getHeight() != newImage.getHeight()) {

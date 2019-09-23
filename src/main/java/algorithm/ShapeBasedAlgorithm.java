@@ -10,6 +10,7 @@ import utils.SizeReducer;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.text.DecimalFormat;
 
 public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
 
@@ -23,7 +24,11 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
         int imageHeight = reducedImage.getHeight();
 
         int progressStepsCounter = 0;
-        int fitness;
+        double fitness;
+
+        BufferedImage blankImage = ImageUtils.createEmptyImage(originalImage);
+        ImageIO.write(blankImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "out0.jpg"));
+
 
         int numOfEpochs = AlgorithmConfig.NUM_OF_EPOCHS;
         int shapesPerEpoch = AlgorithmConfig.SHAPES_PER_EPOCH;
@@ -38,7 +43,7 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
 
             BufferedImage baseImage = ImageUtils.createEmptyImage(reducedImage);
             renderingManager.renderImage(solutionState, baseImage, 0, segmentStart);
-            fitness = ErrorCalc.calculateIntCost(reducedImage, baseImage, 1);
+            fitness = ErrorCalc.calculateCost(reducedImage, baseImage);
 
             for (int i = 0; i < shapesPerEpoch; i++) {
                 solutionState.getShapes().add(generateRandomShape(factor, imageWidth, imageHeight));
@@ -48,15 +53,19 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
                 BufferedImage newImage = ImageUtils.deepCopy(baseImage);
                 SolutionState newState = solutionState.mutate(segmentStart, segmentEnd, factor, imageWidth, imageHeight);
                 renderingManager.renderImage(newState, newImage, segmentStart, segmentEnd);
-                int newCost = ErrorCalc.calculateIntCost(reducedImage, newImage, 1);
-                if (newCost < fitness) {
+                double newFitness = ErrorCalc.calculateCost(reducedImage, newImage);
+                if (newFitness < fitness) {
                     int globalIterationIndex = epoch * iterationsPerRun + iter;
-                    System.out.println(globalIterationIndex + ": " + (fitness - newCost) + " " + newCost);
+                    System.out.println(globalIterationIndex + ": " + new DecimalFormat("#0.000000").format(newFitness));
                     solutionState = newState;
-                    fitness = newCost;
+                    fitness = newFitness;
                     progressStepsCounter++;
                     if (AlgorithmConfig.SHOULD_OUTPUT_PROGRESS && (progressStepsCounter % AlgorithmConfig.PROGRESS_INTERVAL == 0)) {
-                        ImageIO.write(newImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "out" + globalIterationIndex + ".jpg"));
+                        SolutionState solutionStateCopy = solutionState.copy();
+                        solutionStateCopy.expand(blockSize);
+                        BufferedImage outputImage = ImageUtils.createEmptyImage(originalImage);
+                        renderingManager.renderImage(solutionStateCopy, outputImage, 0, segmentEnd);
+                        ImageIO.write(outputImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "out" + globalIterationIndex + ".jpg"));
                     }
                 }
             }
