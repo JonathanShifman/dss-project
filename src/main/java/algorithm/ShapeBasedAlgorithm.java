@@ -2,7 +2,8 @@ package algorithm;
 
 import etities.IShape;
 import etities.SolutionState;
-import fitnessEvaluation.ErrorCalc;
+import fitnessEvaluation.ACECalculator;
+import fitnessEvaluation.IFitnessCalculator;
 import rendering.ImageRenderingManager;
 import utils.ImageUtils;
 import utils.SizeReducer;
@@ -18,6 +19,8 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
 
     @Override
     public void recreateImage(BufferedImage originalImage) throws Exception {
+        ImageIO.write(originalImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "image1.jpg"));
+
         int blockSize = ImageUtils.calculateBlockSize(originalImage, AlgorithmConfig.MAX_FRAME_SIDE);
         BufferedImage reducedImage = SizeReducer.reduceSize(originalImage, blockSize);
         int imageWidth = reducedImage.getWidth();
@@ -29,6 +32,7 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
         BufferedImage blankImage = ImageUtils.createEmptyImage(originalImage);
         ImageIO.write(blankImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "out0.jpg"));
 
+        IFitnessCalculator fitnessCalculator = new ACECalculator();
 
         int numOfEpochs = AlgorithmConfig.NUM_OF_EPOCHS;
         int shapesPerEpoch = AlgorithmConfig.SHAPES_PER_EPOCH;
@@ -43,7 +47,7 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
 
             BufferedImage baseImage = ImageUtils.createEmptyImage(reducedImage);
             renderingManager.renderImage(solutionState, baseImage, 0, segmentStart);
-            fitness = ErrorCalc.calculateCost(reducedImage, baseImage);
+            fitness = fitnessCalculator.calculateFitness(reducedImage, baseImage);
 
             for (int i = 0; i < shapesPerEpoch; i++) {
                 solutionState.getShapes().add(generateRandomShape(factor, imageWidth, imageHeight));
@@ -53,7 +57,7 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
                 BufferedImage newImage = ImageUtils.deepCopy(baseImage);
                 SolutionState newState = solutionState.mutate(segmentStart, segmentEnd, factor, imageWidth, imageHeight);
                 renderingManager.renderImage(newState, newImage, segmentStart, segmentEnd);
-                double newFitness = ErrorCalc.calculateCost(reducedImage, newImage);
+                double newFitness = fitnessCalculator.calculateFitness(reducedImage, newImage);
                 if (newFitness < fitness) {
                     int globalIterationIndex = epoch * iterationsPerRun + iter;
                     System.out.println(globalIterationIndex + ": " + new DecimalFormat("#0.000000").format(newFitness));
@@ -74,7 +78,7 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
         solutionState.expand(blockSize);
         BufferedImage finalImage = ImageUtils.createEmptyImage(originalImage);
         renderingManager.renderImage(solutionState, finalImage, 0, totalNumOfShapes);
-        ImageIO.write(finalImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "final.jpg"));
+        ImageIO.write(finalImage, "jpg", new File(AlgorithmConfig.OUTPUT_DIR + "image2.jpg"));
     }
 
     protected abstract IShape generateRandomShape(double factor, int imageWidth, int imageHeight);
