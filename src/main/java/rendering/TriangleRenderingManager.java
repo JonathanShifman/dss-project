@@ -6,6 +6,9 @@ import etities.Triangle;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Renders triangles onto an image
+ */
 public class TriangleRenderingManager implements ImageRenderingManager {
 
     @Override

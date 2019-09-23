@@ -3,6 +3,9 @@ package fitnessEvaluation;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 
+/**
+ * Calculates the fitness value of a generated image according to the ACE criterion
+ */
 public class ACECalculator implements IFitnessCalculator {
 
     @Override

@@ -7,6 +7,9 @@ import java.io.File;
 
 public class CompareImages {
 
+    /**
+     * Used to manually compare an original image with a generated one and output the ACE value
+     */
     public static void main(String[] args) throws Exception {
         String originalPath = "src/main/resources/output_dona1/image1.jpg";
         String generatedPath = "src/main/resources/output_dona1/image2.jpg";

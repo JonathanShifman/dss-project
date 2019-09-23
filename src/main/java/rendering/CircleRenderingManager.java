@@ -6,6 +6,9 @@ import etities.SolutionState;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Renders a circle onto an image
+ */
 public class CircleRenderingManager implements ImageRenderingManager {
 
     @Override

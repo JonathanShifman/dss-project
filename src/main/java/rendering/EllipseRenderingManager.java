@@ -6,8 +6,14 @@ import etities.SolutionState;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Renders an ellipse onto an image
+ */
 public class EllipseRenderingManager implements ImageRenderingManager {
 
+    /**
+     * Indicates whether or not ellipse rotation angles should be taken into account
+     */
     private static final boolean ALLOW_ELLIPSE_ROTATION = false;
 
     public void renderImage(SolutionState solutionState, BufferedImage image, int start, int end) {

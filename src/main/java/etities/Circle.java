@@ -2,8 +2,19 @@ package etities;
 
 public class Circle extends Shape {
 
+    /**
+     * Location X value
+     */
     private int x;
+
+    /**
+     * Location Y value
+     */
     private int y;
+
+    /**
+     * The diameter
+     */
     private int size;
 
     public Circle() {
@@ -13,6 +24,10 @@ public class Circle extends Shape {
         this.size = 0;
     }
 
+    /**
+     * @param progressFactor The progress factor that determines the size upper bound
+     * @return A randomly generated circle
+     */
     public static Circle generateRandom(double progressFactor, int imageWidth, int imageHeight) {
         Circle circle = new Circle();
         double sizeBound = progressFactor * (double)imageWidth;

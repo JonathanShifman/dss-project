@@ -4,6 +4,9 @@ import java.awt.*;
 
 public class Triangle extends Shape {
 
+    /**
+     * The three points defining the triangle
+     */
     private Point a;
     private Point b;
     private Point c;
@@ -15,22 +18,23 @@ public class Triangle extends Shape {
         this.c = new Point(0, 0);
     }
 
+    /**
+     * @param progressFactor The progress factor that determines the size upper bound
+     * @return A randomly generate triangle
+     */
     public static Triangle generateRandom(double progressFactor, int imageWidth, int imageHeight) {
         Triangle triangle = new Triangle();
-        int sizeBound = (int)(progressFactor * (double)imageWidth);
-        int xA = rand.nextInt(imageHeight + sizeBound) - sizeBound;
-        int yA = rand.nextInt(imageHeight + sizeBound) - sizeBound;
-        triangle.a = new Point(xA, yA);
-
-        int distanceB = rand.nextInt(sizeBound);
-        int distanceC = rand.nextInt(sizeBound);
-        double angleB = rand.nextDouble() * 2 * Math.PI;
-        double angleC = rand.nextDouble() * 2 * Math.PI;
-        triangle.b = calculatePointAtDistance(triangle.a, distanceB, angleB);
-        triangle.c = calculatePointAtDistance(triangle.a, distanceC, angleC);
+        triangle.mutateLocation(progressFactor, imageWidth, imageHeight);
         return triangle;
     }
 
+    /**
+     * Calculates the point that is located at a certain distance and angle from a point p
+     * @param p The original point
+     * @param distance The distance from p
+     * @param angle The angle from p
+     * @return The new point
+     */
     private static Point calculatePointAtDistance(Point p, int distance, double angle) {
         int x = p.x + (int)((double)distance * Math.cos(angle));
         int y = p.y + (int)((double)distance * Math.sin(angle));

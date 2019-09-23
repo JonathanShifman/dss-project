@@ -5,6 +5,10 @@ import java.util.Random;
 public abstract class Shape implements IShape {
 
     protected static Random rand = new Random();
+
+    /**
+     * The color of the shape
+     */
     protected RGBAColor color;
 
     public Shape() {
@@ -21,8 +25,15 @@ public abstract class Shape implements IShape {
         }
     }
 
+    /**
+     * Performs a location-based mutation (by mutating the location and size of the shape)
+     * @param progressFactor The progress factor that determines the size upper bound
+     */
     protected abstract void mutateLocation(double progressFactor, int imageWidth, int imageHeight);
 
+    /**
+     * Performs a color-based mutation by assigning a random new color to the shape
+     */
     protected void mutateColor() {
         int bound = 100;
         int r = rand.nextInt(bound);

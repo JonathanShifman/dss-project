@@ -4,6 +4,12 @@ import java.awt.image.*;
 
 public class SizeReducer {
 
+    /**
+     * Reduces the image size.
+     * For example, if the original image is of size 400x400, and blockSize is 4, the output image will
+     * be of size 100x100
+     * @return
+     */
     public static BufferedImage reduceSize(BufferedImage originalImage, int blockSize) {
         if (blockSize == 1) {
             return originalImage;

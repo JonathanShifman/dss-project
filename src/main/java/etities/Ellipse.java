@@ -2,10 +2,29 @@ package etities;
 
 public class Ellipse extends Shape {
 
+    /**
+     * Location X value
+     */
     private int x;
+
+    /**
+     * Location Y value
+     */
     private int y;
+
+    /**
+     * Bounding rectangle width
+     */
     private int width;
+
+    /**
+     * Bounding rectangle height
+     */
     private int height;
+
+    /**
+     * Rotation angle [deg]
+     */
     private int angle;
 
     public Ellipse() {
@@ -17,20 +36,13 @@ public class Ellipse extends Shape {
         this.angle = 0;
     }
 
+    /**
+     * @param progressFactor The progress factor that determines the size upper bound
+     * @return A randomly generated ellipse
+     */
     public static Ellipse generateRandom(double progressFactor, int imageWidth, int imageHeight) {
         Ellipse ellipse = new Ellipse();
-        double wBound = progressFactor * (double)imageWidth;
-        double hBound = progressFactor * (double)imageHeight;
-        int width = rand.nextInt((int)wBound);
-        int height = rand.nextInt((int)hBound);
-        int x = rand.nextInt(imageHeight + width) - width;
-        int y = rand.nextInt(imageHeight + height) - height;
-        int angle = rand.nextInt(180);
-        ellipse.x = x;
-        ellipse.y = y;
-        ellipse.width = width;
-        ellipse.height = height;
-        ellipse.angle = angle;
+        ellipse.mutateLocation(progressFactor, imageWidth, imageHeight);
         return ellipse;
     }
 
