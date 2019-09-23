@@ -14,7 +14,7 @@ public class RGBAColor {
         this.a = a;
     }
 
-    public RGBAColor clone() {
+    public RGBAColor copy() {
         return new RGBAColor(r, g, b, a);
     }
 

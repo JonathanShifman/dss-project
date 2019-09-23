@@ -4,6 +4,6 @@ public interface IShape {
 
     void expand(int expansionFactor);
 
-    IShape clone();
+    IShape copy();
 
 }

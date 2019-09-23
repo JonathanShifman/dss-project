@@ -31,7 +31,7 @@ public abstract class ShapeBasedAlgorithm implements IRecreationAlgorithm {
             renderingManager.renderImage(solutionState, baseImage, 0, segmentStart);
             fitness = ErrorCalc.calculateIntCost(reducedImage, baseImage, 1);
 
-            for (int i = 0; i < totalNumOfShapes; i++) {
+            for (int i = 0; i < shapesPerEpoch; i++) {
                 solutionState.getShapes().add(generateRandomShape(factor, imageWidth, imageHeight));
             }
 

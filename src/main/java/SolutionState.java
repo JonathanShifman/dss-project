@@ -10,16 +10,16 @@ public class SolutionState {
         shapes = new ArrayList<>(numOfShapes);
     }
 
-    public SolutionState clone() {
-        SolutionState cloned = new SolutionState(this.shapes.size());
+    public SolutionState copy() {
+        SolutionState copied = new SolutionState(this.shapes.size());
         for (int i = 0; i < this.shapes.size(); i++) {
-            cloned.shapes.add(this.shapes.get(i).clone());
+            copied.shapes.add(this.shapes.get(i).copy());
         }
-        return cloned;
+        return copied;
     }
 
     public SolutionState mutate(int start, int end, double factor, int imageWidth, int imageHeight) {
-        SolutionState mutatedState = this.clone();
+        SolutionState mutatedState = this.copy();
         Random rand = new Random();
         int i = start + rand.nextInt(end - start);
         IShape shape = mutatedState.shapes.get(i);
