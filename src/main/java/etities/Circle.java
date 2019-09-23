@@ -2,13 +2,15 @@ package etities;
 
 public class Circle extends Shape {
 
+    private int x;
+    private int y;
     private int size;
 
     public Circle() {
+        super();
         this.x = 0;
         this.y = 0;
         this.size = 0;
-        this.color = new RGBAColor(0, 0, 0, 0);
     }
 
     public static Circle generateRandom(double progressFactor, int imageWidth, int imageHeight) {
@@ -51,11 +53,16 @@ public class Circle extends Shape {
         return copied;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public int getSize() {
         return size;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
 }

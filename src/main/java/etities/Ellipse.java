@@ -2,17 +2,19 @@ package etities;
 
 public class Ellipse extends Shape {
 
+    private int x;
+    private int y;
     private int width;
     private int height;
     private int angle;
 
     public Ellipse() {
+        super();
         this.x = 0;
         this.y = 0;
         this.width = 0;
         this.height = 0;
         this.angle = 0;
-        this.color = new RGBAColor(0, 0, 0, 0);
     }
 
     public static Ellipse generateRandom(double progressFactor, int imageWidth, int imageHeight) {
@@ -68,28 +70,20 @@ public class Ellipse extends Shape {
         return copied;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public int getWidth() {
         return width;
     }
 
     public int getHeight() {
         return height;
-    }
-
-    public int getAngle() {
-        return angle;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setAngle(int angle) {
-        this.angle = angle;
     }
 
 }

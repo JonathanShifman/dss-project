@@ -5,9 +5,11 @@ import java.util.Random;
 public abstract class Shape implements IShape {
 
     protected static Random rand = new Random();
-    protected int x;
-    protected int y;
     protected RGBAColor color;
+
+    public Shape() {
+        this.color = new RGBAColor(0, 0, 0, 0);
+    }
 
     @Override
     public void mutate(double progressFactor, int imageWidth, int imageHeight) {
@@ -30,27 +32,8 @@ public abstract class Shape implements IShape {
         this.color = new RGBAColor(r, g, b, a);
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
     public RGBAColor getRGBAColor() {
         return color;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setColor(RGBAColor color) {
-        this.color = color;
-    }
 }
