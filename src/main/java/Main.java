@@ -16,7 +16,7 @@ public class Main {
             outputDir.mkdir();
         }
 
-        String imagePath = "src/main/resources/gallery/eiffel.jpg"; // The path of the image to recreate
+        String imagePath = "src/main/resources/gallery/dona.jpg"; // The path of the image to recreate
         BufferedImage originalImage = ImageIO.read(new File(imagePath));
         IRecreationAlgorithm algorithm = AlgorithmConfig.SHAPE_TO_USE.getAlgorithm();
         algorithm.recreateImage(originalImage);

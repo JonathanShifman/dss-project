@@ -10,17 +10,17 @@ public class AlgorithmConfig {
     /**
      * The number of epochs for the algorithm to run
      */
-    public static final int NUM_OF_EPOCHS = 50;
+    public static final int NUM_OF_EPOCHS = 25;
 
     /**
      * The number of shapes to be considered in each epoch
      */
-    public static final int SHAPES_PER_EPOCH = 4;
+    public static final int SHAPES_PER_EPOCH = 8;
 
     /**
      * The number of iterations to perform in each epoch
      */
-    public static final int ITERATIONS_PER_EPOCH = 25_000;
+    public static final int ITERATIONS_PER_EPOCH = 30_000;
 
     /**
      * The shape for the algorithm to use
